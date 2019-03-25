@@ -17,16 +17,17 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/pingcap/pd/watch"
 	"io/ioutil"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
 
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/kvproto/pkg/pdpb"
-	log "github.com/pingcap/log"
+	"github.com/pingcap/log"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -109,6 +110,8 @@ type client struct {
 	urls        []string
 	clusterID   uint64
 	tsoRequests chan *tsoRequest
+
+	watch.Watcher
 
 	connMu struct {
 		sync.RWMutex
