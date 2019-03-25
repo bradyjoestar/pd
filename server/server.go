@@ -16,7 +16,10 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/coreos/etcd/etcdserver/api/v3rpc"
+	"github.com/coreos/etcd/etcdserver/etcdserverpb"
 	"math/rand"
+	"net"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -203,6 +206,23 @@ func (s *Server) startEtcd(ctx context.Context) error {
 	s.etcd = etcd
 	s.client = client
 	s.id = etcdServerID
+
+	//start watch server
+	go func() {
+		lis, err := net.Listen("tcp", "localhost:28080")
+		if err != nil {
+			log.Info("failed to listen")
+		}
+		grpcserver := grpc.NewServer()
+		etcdserverpb.RegisterWatchServer(grpcserver, v3rpc.NewWatchServer(s.etcd.Server))
+		log.Info("ready to start pd watch server")
+
+		if err := grpcserver.Serve(lis); err != nil {
+			log.Error("failed to start pd watch server")
+		}
+	}()
+
+
 	return nil
 }
 
