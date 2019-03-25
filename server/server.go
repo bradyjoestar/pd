@@ -211,7 +211,7 @@ func (s *Server) startEtcd(ctx context.Context) error {
 	go func() {
 		lis, err := net.Listen("tcp", "localhost:28080")
 		if err != nil {
-			log.Info("failed to listen")
+			log.Info("failed to start watch server")
 		}
 		grpcserver := grpc.NewServer()
 		etcdserverpb.RegisterWatchServer(grpcserver, v3rpc.NewWatchServer(s.etcd.Server))

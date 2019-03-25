@@ -1,11 +1,11 @@
 package watch
 
 import (
+	"context"
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"context"
 	"reflect"
 	"runtime"
 	"strings"
@@ -83,4 +83,3 @@ func isOpFuncCalled(op string, opts []OpOption) bool {
 	}
 	return false
 }
-
